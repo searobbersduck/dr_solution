@@ -50,4 +50,39 @@ img1.show()
 
 有了上述前提，可以将图片转换为pytorch需要的tensor结构，也可以从pytorch的tensor结构转换为图像进行显示。
 
-## 2. 
+## 2. 如何将生成结果写入csv文件
+
+先写个简单的例子，将图片和分级结果写成类似```./test/trainLabels.csv```的文件格式。
+参考[python：读取CSV文件的相关技巧](http://blog.csdn.net/u013250416/article/details/53189019)
+
+示例代码如下：
+
+```python
+import pandas as pd
+
+imagelist = ['0_left.jpeg', '1_left.jpeg', '2_left.jpeg', '3_left.jpeg',
+             '4_left.jpeg', '5_left.jpeg', '6_left.jpeg', '7_left.jpeg', '8_left.jpeg']
+catalist = []
+
+for i in imagelist:
+    if '0' in i:
+        catalist.append(0)
+    else:
+        catalist.append(1)
+
+list = ['image', 'level']
+cols = pd.DataFrame(columns=list)
+
+
+datas = {}
+datas['image'] = imagelist
+datas['level'] = catalist
+
+for id in list:
+    cols[id] = datas[id]
+
+cols.to_csv('test.csv', index=False)
+```
+结果如下：
+![test.csv](./test/test_csv.jpeg)
+
