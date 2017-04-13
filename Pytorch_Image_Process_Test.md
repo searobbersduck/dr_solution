@@ -84,5 +84,9 @@ for id in list:
 cols.to_csv('test.csv', index=False)
 ```
 结果如下：
+
 ![test.csv](./test/test_csv.jpeg)
+
+
+## 3. 如何成批的读入数据，并将结果写入csv文件
 
