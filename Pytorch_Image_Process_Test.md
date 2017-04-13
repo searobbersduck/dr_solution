@@ -90,3 +90,31 @@ cols.to_csv('test.csv', index=False)
 
 ## 3. 如何成批的读入数据，并将结果写入csv文件
 
+
+## 4. kappa检验
+参考如下文档：
+[kappa](http://vassarstats.net/kappaexp.html)
+[kappa](http://vassarstats.net/kappa.html)
+
+Dependency:
+[benhamner/Metrics](https://github.com/benhamner/Metrics/tree/master/Python)
+
+安装：
+```python
+pip install ml_metrics
+```
+
+代码（详见test/kappa_test.py）:
+```python
+import ml_metrics
+
+a = [2,2,2,2,5,6,7,8,9,3]
+b = [2,2,2,2,2,6,5,7,8,3]
+
+res = ml_metrics.quadratic_weighted_kappa(a,b,2,9)
+print(res)
+```
+运行结果：
+```
+0.8792270531400966
+```

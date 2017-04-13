@@ -62,7 +62,7 @@ def main():
         input_var = torch.autograd.Variable(input)
         output = model(input_var)
         res1,pred = output.topk(1, 1, True, True)
-        outlist = pred.data.numpy()
+        outlist = pred.cpu().data.numpy()
         for o in outlist:
             reslist.append(o[0])
         for p in path:
