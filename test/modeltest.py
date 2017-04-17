@@ -13,6 +13,14 @@ import os
 
 import pandas as pd
 
+import ml_metrics
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-kappa-val', dest='kappa_val', action='store_true', help='whether to check with kappa')
+
+args = parser.parse_args()
 
 def main():
     model = models.ResNet2()
@@ -45,8 +53,11 @@ def main():
 
     reslist = []
     nameslist = []
+    targetlist = []
 
     for i, (input, target, path) in enumerate(val_loader):
+        for t in target:
+            targetlist.append(t)
         input_var = torch.autograd.Variable(input)
         output = model(input_var)
         res1,pred = output.topk(1, 1, True, True)
@@ -58,6 +69,7 @@ def main():
 
     print('result list: {}'.format(reslist))
     print('names list: {}'.format(nameslist))
+    print('target list: {}'.format(targetlist))
 
     datas = {}
     datas['image'] = nameslist
@@ -70,6 +82,10 @@ def main():
         cols[id] = datas[id]
 
     cols.to_csv('test.csv', index=False)
+
+    if args.kappa_val:
+        kp = ml_metrics.quadratic_weighted_kappa(targetlist,reslist,0,4)
+        print('quadratic weighted kappa: {}'.format(kp))
 
     # img = Image.open('../sample/4/17_left.jpeg')
     #

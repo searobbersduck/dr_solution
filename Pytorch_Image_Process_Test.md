@@ -89,7 +89,7 @@ cols.to_csv('test.csv', index=False)
 
 
 ## 3. 如何成批的读入数据，并将结果写入csv文件
-
+代码详见：```test/model_test.py```
 
 ## 4. kappa检验
 参考如下文档：

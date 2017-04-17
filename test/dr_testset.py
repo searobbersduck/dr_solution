@@ -15,6 +15,8 @@ import os
 
 import pandas as pd
 
+import ml_metrics
+
 parser = argparse.ArgumentParser()
 parser.add_argument('test_dataset', metavar='/test', help='the path of test dataset')
 parser.add_argument('model', metavar='dr model', help = 'the trained model')
@@ -22,6 +24,8 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('-b', '--batch-size', default=256, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
+
+parser.add_argument('-kappa-val', dest='kappa_val', action='store_true', help='whether to check with quadratic kappa')
 
 args = parser.parse_args()
 
@@ -57,8 +61,12 @@ def main():
 
     reslist = []
     nameslist = []
+    targetlist = []
 
     for i, (input, target, path) in enumerate(val_loader):
+        print('batch: {}'.format(i))
+        for t in target:
+            targetlist.append(t)
         input_var = torch.autograd.Variable(input)
         output = model(input_var)
         res1,pred = output.topk(1, 1, True, True)
@@ -70,6 +78,13 @@ def main():
 
     print('result list: {}'.format(reslist))
     print('names list: {}'.format(nameslist))
+    print('target list: {}'.format(targetlist))
+
+
+    if args.kappa_val:
+        kp = ml_metrics.quadratic_weighted_kappa(targetlist,reslist,0,4)
+        print('quadratic weighted kappa: {}'.format(kp))
+
 
     datas = {}
     datas['image'] = nameslist
@@ -82,25 +97,6 @@ def main():
         cols[id] = datas[id]
 
     cols.to_csv('test.csv', index=False)
-
-    # img = Image.open('../sample/4/17_left.jpeg')
-    #
-    # in_img = trans(img)
-    #
-    # in_imgs = [ in_img for i in range(5)]
-    #
-    # in_imgs = torch.stack(in_imgs, 0)
-    #
-    # input_var = torch.autograd.Variable(in_imgs)
-    #
-    # model.eval()
-    #
-    # output = model(input_var)
-    #
-    # _, pred = output.topk(1,1,True,True)
-    #
-    # print(output)
-    # print(pred)
 
 if __name__ == '__main__':
     main()
