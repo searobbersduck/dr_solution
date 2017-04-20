@@ -1,4 +1,6 @@
-# 1. load model
+# invoke script: python dr_testset.py /home/data/kaggle-dr/data/train_512_jpeg/val /home/weidong/code/dl/pytorch/dr_solution/best_model_check_point -j 12 -b 256 -kappa-val
+
+
 import models
 
 import argparse
@@ -26,6 +28,8 @@ parser.add_argument('-b', '--batch-size', default=256, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 
 parser.add_argument('-kappa-val', dest='kappa_val', action='store_true', help='whether to check with quadratic kappa')
+
+parser.add_argument('out_dir', metavar='out dir', help='the output file:*.csv')
 
 args = parser.parse_args()
 
@@ -97,7 +101,7 @@ def main():
     for id in list:
         cols[id] = datas[id]
 
-    cols.to_csv('test.csv', index=False)
+    cols.to_csv(args.out_dir, index=False)
 
 if __name__ == '__main__':
     main()
