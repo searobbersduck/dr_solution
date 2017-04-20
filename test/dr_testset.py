@@ -30,8 +30,9 @@ parser.add_argument('-kappa-val', dest='kappa_val', action='store_true', help='w
 args = parser.parse_args()
 
 def main():
-    model = models.ResNet2()
-    model = torch.nn.DataParallel(model).cuda()
+    #model = models.ResNet2()
+    model = models.ResNet3_18()
+    model = torch.nn.DataParallel(model, device_ids=[0,1,2]).cuda()
 
     checkpoint = torch.load(args.model)
     model.load_state_dict(checkpoint['state_dict'])
@@ -47,7 +48,7 @@ def main():
             transforms.CenterCrop(448),
             transforms.ToTensor(),
             normalize,
-        ])),batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
+        ])),batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=False)
 
     trans = transforms.Compose([
         transforms.Scale(512),
