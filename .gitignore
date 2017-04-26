@@ -2,5 +2,6 @@
 .idea
 test/*.png
 test/test.csv
+test/*.log
 sample
 sample/*
