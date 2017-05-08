@@ -220,3 +220,30 @@ class ResNet3_18(nn.Module):
         x = self.fc(x)
 
         return x
+
+
+
+class ResNet3_101(nn.Module):
+    def __init__(self, pretrained=False, pretrained_model=None):
+        super(ResNet3_101,self).__init__()
+
+        # self.model = models.ResNet(Bottleneck, [3, 8, 36, 3],num_classes=1000)
+        # self.model.load_state_dict(model_zoo.load_url('https://s3.amazonaws.com/pytorch/models/resnet152-b121ed2d.pth'))
+
+        self.model = models.ResNet(Bottleneck, [3, 4, 23, 3], num_classes=1000)
+        if pretrained:
+            self.model.load_state_dict(torch.load(pretrained_model))
+        # self.model.load_state_dict(torch.load('1.pth'))
+            for param in self.model.parameters():
+                param.requires_grad = False
+
+        self.model.fc = nn.Linear(512*4, 1000)
+        self.model.fc.parameters().requires_grad = True
+        self.fc = nn.Linear(1000,5)
+
+
+    def forward(self,x):
+        x = self.model(x)
+        x = self.fc(x)
+
+        return x

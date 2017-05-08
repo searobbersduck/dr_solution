@@ -5,6 +5,9 @@ from skimage import measure, exposure
 
 import skimage
 
+import scipy.misc
+from PIL import Image
+
 def tight_crop(img, size=None):
     img_gray = np.mean(img, 2)
     img_bw = img_gray > threshold_otsu(img_gray)
@@ -24,10 +27,10 @@ def tight_crop(img, size=None):
 
     return img_crop
 
-import scipy.misc
-from PIL import Image
 
-img = scipy.misc.imread('./raw1.jpg')
+
+# img = scipy.misc.imread('./raw1.jpg')
+img = scipy.misc.imread('./raw.png')
 
 img = img.astype(np.float32)
 img /= 255
@@ -36,7 +39,7 @@ img_crop = tight_crop(img)
 
 
 pilImage = Image.fromarray(skimage.util.img_as_ubyte(img_crop))
-pilImage.show()
+# pilImage.show()
 
 
 # adaptive historgram equlization
@@ -49,4 +52,22 @@ def channelwise_ahe(img):
 img_ahe = channelwise_ahe(img_crop)
 
 pilImage = Image.fromarray(skimage.util.img_as_ubyte(img_ahe))
+pilImage.show()
+
+mean = np.array([108.64628601, 75.86886597, 54.34005737])
+std = np.array([70.53946096, 51.71475228, 43.03428563])
+
+# subtract the local average
+img = scipy.misc.imread('./raw.png')
+img = img.astype(np.float32)
+# img -= np.mean(img, (0,1))
+img -= mean
+img /=std
+
+print(np.max(img))
+
+print(np.mean(img, (0,1)))
+
+pilImage = Image.fromarray(skimage.util.img_as_ubyte(img))
+
 pilImage.show()
